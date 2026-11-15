@@ -2,7 +2,7 @@
 
 ## Ссылка на проект
 
-`<ссылка на GitHub после публикации>`
+https://github.com/IgorL0SEV/PDF_Check_Maker_progect
 
 ## Что сдаётся
 
@@ -15,10 +15,11 @@
 
 ## Статус PDF-движков
 
-Фактический движок при проверке — **xhtml2pdf**: на машине нет GTK3,
-поэтому WeasyPrint не запускался. Ветка WeasyPrint реализована; после установки
-GTK3 она включается автоматически. Проверка описана в README, раздел
-«WeasyPrint и GTK3»:
+Локально на Windows фактический движок — **xhtml2pdf**: GTK3 не установлен.
+Ветка WeasyPrint проверена в CI на Ubuntu: workflow `.github/workflows/tests.yml`
+прошёл, импорт WeasyPrint и генерация PDF движком `weasyprint` подтверждены.
+Локальная проверка на Windows требует установки GTK3 и описана в README,
+раздел «WeasyPrint и GTK3»:
 
 1. Windows: `winget install --id tschoonj.GTKForWindows`, новое окно терминала,
    затем генерация PDF и проверка строки `Движок: weasyprint`.

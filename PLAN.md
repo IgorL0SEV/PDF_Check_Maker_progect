@@ -5,8 +5,9 @@
 - Python 3.10 или новее. Проверка выполнена на Python 3.12.10.
 - Доступ в интернет для установки пакетов из `requirements.txt`.
 - Свободный шрифт DejaVu Sans и его лицензия в `assets/`.
-- Для WeasyPrint на Windows — GTK3/Pango. В проверке GTK3 не было,
-  поэтому фактически использовался резервный xhtml2pdf.
+- Для WeasyPrint на Windows — GTK3/Pango. Локально GTK3 не было, поэтому
+  использовался резервный xhtml2pdf. В CI на Ubuntu WeasyPrint проверен:
+  workflow прошёл, PDF создан движком `weasyprint`.
 
 ## Шаги
 
@@ -94,13 +95,15 @@ OSError: cannot load library 'libgobject-2.0-0'
 
 - `git status` — чистое дерево после коммита;
 - `git ls-files` — без `venv/`, `output/*.pdf`, `__pycache__` и локального файла правил;
-- remote не настроен, проект локальный.
+- репозиторий опубликован: https://github.com/IgorL0SEV/PDF_Check_Maker_progect;
+- CI-workflow прошёл: импорт WeasyPrint, 35 тестов и генерация PDF движком
+  `weasyprint` на Ubuntu.
 
 ## Что не проверено
 
-- **WeasyPrint без GTK3.** Движок не запускался: на машине проверки нет
-  библиотек GTK3. Код ветки написан, но фактический PDF сформирован
-  только xhtml2pdf.
+- **WeasyPrint локально на Windows.** Движок не запускался без GTK3: на
+  машине проверки нет библиотек GTK3. В CI на Ubuntu ветка проверена и
+  сформировала PDF, но локальная Windows-проверка требует установки GTK3.
 - **Автооткрытие PDF.** Функция реализована для Windows, macOS и Linux,
   но проверочные запуски использовали `--no-open`, чтобы не открывать
   окно просмотрщика. Ошибка открытия не роняет программу.
@@ -114,7 +117,7 @@ OSError: cannot load library 'libgobject-2.0-0'
 1. Клонировать репозиторий:
 
 ```powershell
-git clone <repo-url>
+git clone https://github.com/IgorL0SEV/PDF_Check_Maker_progect.git
 cd PDF_Check_Maker_progect
 ```
 
@@ -155,9 +158,9 @@ winget install --id tschoonj.GTKForWindows
    и повторить генерацию. В выводе должно быть `Движок: weasyprint`.
 
    **Linux/CI:** установить `libpango-1.0-0 libpangocairo-1.0-0 libcairo2
-   libgdk-pixbuf-2.0-0`, затем прогнать тесты и генерацию. В репозитории
-   подготовлен workflow `.github/workflows/tests.yml`; он не запускался,
-   пока remote не настроен.
+   libgdk-pixbuf-2.0-0`, затем прогнать тесты и генерацию. Workflow
+   `.github/workflows/tests.yml` уже прошёл на GitHub Actions: импорт
+   WeasyPrint, тесты и PDF движком `weasyprint` подтверждены.
 
 ## Риски и меры
 
@@ -192,7 +195,8 @@ winget install --id tschoonj.GTKForWindows
 ## Git-политика
 
 - Репозиторий инициализирован веткой `main`.
-- Один осмысленный коммит на русском.
-- Remote не добавлен, публикация не выполнялась.
+- Коммиты содержательные, на русском.
+- Remote `origin` добавлен, репозиторий публичный:
+  https://github.com/IgorL0SEV/PDF_Check_Maker_progect
 - Локальный файл правил исключён через `.git/info/exclude`.
 - `output/.gitkeep` сохранён, готовые PDF игнорируются.

@@ -1,13 +1,16 @@
 # PDF-чек-мейкер — курсовой проект (VPa06)
 
+[![tests](https://github.com/IgorL0SEV/PDF_Check_Maker_progect/actions/workflows/tests.yml/badge.svg)](https://github.com/IgorL0SEV/PDF_Check_Maker_progect/actions/workflows/tests.yml)
+
 CLI-приложение на Python: читает счета из CSV или JSON, подставляет данные
 в HTML-шаблон Jinja2 и сохраняет готовый PDF в `output/`.
 
 Проект учебный. В репозитории только синтетические данные; реальные счета
 и персональные данные сюда не попадают.
 
-> **Статус проверки:** фактический PDF-движок — xhtml2pdf. Ветка WeasyPrint
-> не проверена: на машине проверки нет GTK3. Как проверить её — в разделе
+> **Статус проверки:** локально на Windows фактический движок — xhtml2pdf:
+> GTK3 нет. Ветка WeasyPrint проверена в CI на Ubuntu: workflow прошёл, PDF
+> создан движком `weasyprint`. Локальная проверка на Windows — в разделе
 > [«WeasyPrint и GTK3»](#weasyprint-и-gtk3).
 
 ## Что осваиваем
@@ -184,12 +187,13 @@ PDF при этом создаётся через xhtml2pdf. Это не оши�
 WeasyPrint на Windows требует библиотеки GTK3/Pango. Без них импорт падает
 с `OSError` про `libgobject-2.0-0`.
 
-**Текущий статус проверки:** GTK3 на машине проверки не было, поэтому
-фактический движок — **xhtml2pdf**. Ветка WeasyPrint написана, но её результат
-не проверялся. Тест принимает любой из двух движков и не падает, если
-WeasyPrint вдруг станет доступен.
+**Текущий статус проверки:** локально на Windows GTK3 нет, поэтому
+фактический движок — **xhtml2pdf**. Ветка WeasyPrint проверена в CI на Ubuntu:
+workflow установил библиотеки, импорт WeasyPrint прошёл, тесты и генерация PDF
+завершились с движком `weasyprint`. Локальная проверка на Windows всё ещё
+требует установки GTK3; тест принимает любой из двух движков.
 
-Проверить WeasyPrint можно двумя способами.
+Проверить WeasyPrint локально можно двумя способами.
 
 ### Вариант 1. Установить GTK3 на Windows
 
@@ -232,8 +236,9 @@ GTK. Это системный компонент, установка требу
 прогоняет тесты и убеждается, что сгенерированный PDF сделан движком
 `weasyprint`.
 
-Workflow **не запускался**: remote пока не настроен. После публикации на GitHub
-он запустится на push или вручную через вкладку Actions. Вручную на Ubuntu:
+Workflow запускается на GitHub Actions при push и уже прошёл: импорт
+WeasyPrint, тесты и проверка `Движок: weasyprint` — успешно. Вручную на Ubuntu
+команды те же:
 
 ```bash
 sudo apt-get update
@@ -313,9 +318,9 @@ python -m unittest discover -s tests -v
 | Понятные ошибки без трейсбеков | `DataError`, `PDFGenerationError`, обработка в `main()` |
 | Тесты | `tests/test_pdf_generator.py`, 35 тестов |
 | Документация | `README.md`, `CONSPECT.md`, `PLAN.md`, `SAMOPROVERKA.md`, `reference/` |
-| Ссылка на GitHub | добавляется при публикации; сейчас remote не настроен |
+| Ссылка на GitHub | https://github.com/IgorL0SEV/PDF_Check_Maker_progect |
 | Оффер для сдачи | `OFFER.md` — 4 предложения для карточки услуги |
-| Статус PDF-движка | `SUBMISSION.md`: фактический движок xhtml2pdf, WeasyPrint не проверен без GTK3 |
+| Статус PDF-движка | `SUBMISSION.md`: локально xhtml2pdf, WeasyPrint проверен в CI на Ubuntu |
 
 Скриншоты интерфейса и готового PDF делает пользователь: в репозиторий они
 не добавляются автоматически.
@@ -328,7 +333,8 @@ python -m unittest discover -s tests -v
 
 ## Ограничения проекта
 
-- WeasyPrint не проверен без GTK3; фактический движок — xhtml2pdf.
+- Локально на Windows без GTK3 фактический движок — xhtml2pdf; WeasyPrint
+  проверен в CI на Ubuntu, локальная Windows-проверка требует установки GTK3.
 - Вёрстка рассчитана на один счёт на документ; пакетная генерация
   нескольких PDF за один запуск не реализована.
 - Поддерживаются только CSV и JSON; Excel и базы данных не подключены.

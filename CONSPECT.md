@@ -112,8 +112,10 @@ WeasyPrint хорошо понимает современный HTML и CSS, у�
 
 ## Как проверить WeasyPrint
 
-Фактический движок при проверке — xhtml2pdf: GTK3 на машине не было,
-поэтому ветка WeasyPrint не запускалась. Проверить её можно двумя способами.
+Локально на Windows фактический движок — xhtml2pdf: GTK3 на машине нет.
+В CI на Ubuntu ветка WeasyPrint проверена: workflow прошёл, импорт WeasyPrint
+и генерация PDF движком `weasyprint` подтверждены. Локальную проверку на
+Windows можно выполнить двумя способами.
 
 **Вариант 1. Windows + GTK3.** Установить системный компонент:
 
@@ -129,8 +131,8 @@ winget install --id tschoonj.GTKForWindows
 `libpango-1.0-0`, `libpangocairo-1.0-0`, `libcairo2`. В репозитории есть
 workflow `.github/workflows/tests.yml`: он устанавливает библиотеки, проверяет
 импорт WeasyPrint, прогоняет тесты и убеждается, что PDF создан движком
-WeasyPrint. Workflow ещё не запускался, потому что remote не настроен; после
-публикации он запускается на push или вручную.
+WeasyPrint. Workflow уже прошёл на GitHub Actions; локальная Windows-проверка
+по-прежнему требует GTK3.
 
 ## Почему DejaVu Sans
 

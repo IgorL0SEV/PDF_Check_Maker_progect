@@ -170,7 +170,8 @@ WeasyPrint требует GTK3; xhtml2pdf понимает только подм
 терминала, проверить `python -c "import weasyprint"` и сгенерировать PDF.
 В выводе должно быть `Движок: weasyprint`. Второй — проверить в Linux или CI:
 там Pango и Cairo ставятся пакетами `libpango-1.0-0`, `libpangocairo-1.0-0`,
-`libcairo2`; в репозитории есть готовый workflow, который устанавливает
-библиотеки, прогоняет тесты и проверяет, что PDF создан через WeasyPrint.
-Оба способа дают фактическое доказательство, а не предположение.
+`libcairo2`. Workflow `.github/workflows/tests.yml` уже прошёл на GitHub
+Actions: он установил библиотеки, проверил импорт WeasyPrint, прогнал тесты
+и подтвердил, что PDF создан движком `weasyprint`. Локальная проверка на
+Windows при этом всё ещё требует установки GTK3.
 </details>
