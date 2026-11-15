@@ -27,6 +27,7 @@
 | 13. Проверить fallback | Причина WeasyPrint в stderr, движок xhtml2pdf | ✅ |
 | 14. Проверить git | `.gitignore`, `git ls-files`, один коммит | ✅ |
 | 15. Подготовить творческое задание | `OFFER.md` — 4 предложения для биржи | ✅ |
+| 16. Подготовить проверку WeasyPrint | `SUBMISSION.md`, README и CI-workflow для Ubuntu; локально не запускалось | ✅ |
 
 ## Фактические проверки
 
@@ -142,13 +143,21 @@ python pdf_generator.py --data data/invoices.csv --template templates/invoice.ht
 5. Проверить файл в `output/`. Если WeasyPrint недоступен, в stderr будет
    причина, а PDF всё равно создастся через xhtml2pdf.
 
-6. Для работы WeasyPrint установить GTK3:
+6. Проверить ветку WeasyPrint. Возможны два пути.
+
+   **Windows + GTK3:**
 
 ```powershell
 winget install --id tschoonj.GTKForWindows
 ```
 
-После установки открыть новый терминал и повторить запуск.
+   Открыть новое окно терминала, проверить `python -c "import weasyprint"`
+   и повторить генерацию. В выводе должно быть `Движок: weasyprint`.
+
+   **Linux/CI:** установить `libpango-1.0-0 libpangocairo-1.0-0 libcairo2
+   libgdk-pixbuf-2.0-0`, затем прогнать тесты и генерацию. В репозитории
+   подготовлен workflow `.github/workflows/tests.yml`; он не запускался,
+   пока remote не настроен.
 
 ## Риски и меры
 

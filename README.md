@@ -6,6 +6,10 @@ CLI-приложение на Python: читает счета из CSV или JS
 Проект учебный. В репозитории только синтетические данные; реальные счета
 и персональные данные сюда не попадают.
 
+> **Статус проверки:** фактический PDF-движок — xhtml2pdf. Ветка WeasyPrint
+> не проверена: на машине проверки нет GTK3. Как проверить её — в разделе
+> [«WeasyPrint и GTK3»](#weasyprint-и-gtk3).
+
 ## Что осваиваем
 
 - HTML и CSS для печати: страница A4, таблицы, границы, переносы длинных строк.
@@ -47,6 +51,8 @@ PDF_Check_Maker_progect/
 ├── PLAN.md                       # шаги, runbook, риски
 ├── SAMOPROVERKA.md               # вопросы и ответы
 ├── OFFER.md                       # оффер для фриланс-биржи
+├── SUBMISSION.md                  # карточка сдачи
+├── .github/workflows/tests.yml    # CI-проверка WeasyPrint на Ubuntu
 ├── reference/
 │   └── pdf-generation.md         # справочник по HTML→PDF
 ├── assets/
@@ -178,15 +184,70 @@ PDF при этом создаётся через xhtml2pdf. Это не оши�
 WeasyPrint на Windows требует библиотеки GTK3/Pango. Без них импорт падает
 с `OSError` про `libgobject-2.0-0`.
 
-Варианты установки:
+**Текущий статус проверки:** GTK3 на машине проверки не было, поэтому
+фактический движок — **xhtml2pdf**. Ветка WeasyPrint написана, но её результат
+не проверялся. Тест принимает любой из двух движков и не падает, если
+WeasyPrint вдруг станет доступен.
 
-- Winget: `winget install --id tschoonj.GTKForWindows`
-- Или установщик GTK3 Runtime для Windows с официальной страницы проекта GTK.
+Проверить WeasyPrint можно двумя способами.
 
-После установки нужно открыть новое окно терминала и проверить импорт.
-В этом проекте WeasyPrint-движок **не проверен**: GTK3 на машине проверки
-не было, фактически работал xhtml2pdf. Тест не падает, если WeasyPrint
-вдруг станет доступен: он принимает любой из двух движков.
+### Вариант 1. Установить GTK3 на Windows
+
+1. Установить GTK3 Runtime:
+
+```powershell
+winget install --id tschoonj.GTKForWindows
+```
+
+Подойдёт и установщик GTK3 Runtime для Windows с официальной страницы проекта
+GTK. Это системный компонент, установка требует прав администратора.
+
+2. Закрыть все окна терминала и открыть новое: установщик обновляет `PATH`.
+3. Проверить импорт в окружении проекта:
+
+```powershell
+.\venv\Scripts\python.exe -c "import weasyprint; print(weasyprint.__version__)"
+```
+
+4. Сгенерировать PDF и посмотреть, какой движок сработал:
+
+```powershell
+.\venv\Scripts\python.exe pdf_generator.py --data data/invoices.csv --template templates/invoice.html --invoice INV-2026-001 --no-open
+```
+
+В выводе должно быть `Движок: weasyprint`. Полезно сравнить этот PDF с тем,
+что был создан через xhtml2pdf: вёрстка может немного отличаться.
+
+5. Прогнать тесты:
+
+```powershell
+.\venv\Scripts\python.exe -m unittest discover -s tests -v
+```
+
+### Вариант 2. Проверить в Linux или CI
+
+В Linux Pango и Cairo ставятся системными пакетами, отдельный GTK3 Runtime
+не нужен. В репозитории подготовлен workflow `.github/workflows/tests.yml`:
+он устанавливает библиотеки, зависимости Python, проверяет импорт WeasyPrint,
+прогоняет тесты и убеждается, что сгенерированный PDF сделан движком
+`weasyprint`.
+
+Workflow **не запускался**: remote пока не настроен. После публикации на GitHub
+он запустится на push или вручную через вкладку Actions. Вручную на Ubuntu:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y libpango-1.0-0 libpangocairo-1.0-0 libcairo2 libgdk-pixbuf-2.0-0
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python -m unittest discover -s tests -v
+python pdf_generator.py --data data/invoices.csv --template templates/invoice.html --invoice INV-2026-001 --no-open
+```
+
+В выводе последней команды должен быть `Движок: weasyprint`. Этот способ
+не меняет Windows-окружение и даёт автоматическое доказательство того, что
+основная ветка работает.
 
 ## Ограничения xhtml2pdf
 
@@ -254,6 +315,7 @@ python -m unittest discover -s tests -v
 | Документация | `README.md`, `CONSPECT.md`, `PLAN.md`, `SAMOPROVERKA.md`, `reference/` |
 | Ссылка на GitHub | добавляется при публикации; сейчас remote не настроен |
 | Оффер для сдачи | `OFFER.md` — 4 предложения для карточки услуги |
+| Статус PDF-движка | `SUBMISSION.md`: фактический движок xhtml2pdf, WeasyPrint не проверен без GTK3 |
 
 Скриншоты интерфейса и готового PDF делает пользователь: в репозиторий они
 не добавляются автоматически.
