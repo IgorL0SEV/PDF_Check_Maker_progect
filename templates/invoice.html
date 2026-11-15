@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Invoice {{ invoice_id }}</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 18mm 16mm 20mm 16mm;
+    }
+
+    @font-face {
+      font-family: "DejaVu Sans";
+      src: url("{{ font_url|default('assets/DejaVuSans.ttf') }}");
+    }
+
+    body {
+      margin: 0;
+      color: #1f2933;
+      font-family: "DejaVu Sans", sans-serif;
+      font-size: 10pt;
+      line-height: 1.45;
+    }
+
+    .header {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16pt;
+    }
+
+    .header td {
+      padding: 0;
+      vertical-align: top;
+      border: none;
+    }
+
+    .title {
+      margin: 0 0 4pt 0;
+      color: #123c69;
+      font-size: 20pt;
+      font-weight: bold;
+    }
+
+    .subtitle {
+      color: #52606d;
+      font-size: 9pt;
+    }
+
+    .meta {
+      width: 42%;
+      text-align: right;
+    }
+
+    .meta div {
+      margin-bottom: 3pt;
+    }
+
+    .section-title {
+      margin: 14pt 0 6pt 0;
+      color: #123c69;
+      font-size: 11pt;
+      font-weight: bold;
+    }
+
+    .items {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .items th {
+      padding: 7pt 6pt;
+      color: #ffffff;
+      background-color: #123c69;
+      border: 1px solid #123c69;
+      font-size: 9pt;
+      text-align: left;
+    }
+
+    .items td {
+      padding: 6pt;
+      border: 1px solid #bcccdc;
+      vertical-align: top;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .col-number {
+      width: 7%;
+      text-align: center;
+    }
+
+    .col-qty {
+      width: 10%;
+      text-align: right;
+    }
+
+    .col-price {
+      width: 18%;
+      text-align: right;
+    }
+
+    .col-sum {
+      width: 20%;
+      text-align: right;
+    }
+
+    .totals {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8pt;
+    }
+
+    .totals td {
+      padding: 5pt 6pt;
+      border: none;
+    }
+
+    .totals .spacer {
+      width: 55%;
+    }
+
+    .totals .label {
+      width: 25%;
+      border-top: 1px solid #bcccdc;
+      font-weight: bold;
+      text-align: right;
+    }
+
+    .totals .value {
+      width: 20%;
+      border-top: 1px solid #bcccdc;
+      color: #123c69;
+      font-size: 12pt;
+      font-weight: bold;
+      text-align: right;
+    }
+
+    .footer {
+      margin-top: 28pt;
+      padding-top: 8pt;
+      border-top: 1px solid #d9e2ec;
+      color: #52606d;
+      font-size: 8.5pt;
+    }
+  </style>
+</head>
+<body>
+  <table class="header">
+    <tr>
+      <td>
+        <div class="title">Счёт № {{ invoice_id }}</div>
+        <div class="subtitle">Документ сформирован автоматически</div>
+      </td>
+      <td class="meta">
+        <div><strong>Дата:</strong> {{ date }}</div>
+        <div><strong>Покупатель:</strong> {{ customer_name }}</div>
+        <div><strong>Позиций:</strong> {{ items|length }}</div>
+      </td>
+    </tr>
+  </table>
+
+  <div class="section-title">Состав заказа</div>
+  <table class="items">
+    <thead>
+      <tr>
+        <th class="col-number" style="text-align: center;">№</th>
+        <th>Наименование</th>
+        <th class="col-qty" style="text-align: right;">Кол-во</th>
+        <th class="col-price" style="text-align: right;">Цена, ₽</th>
+        <th class="col-sum" style="text-align: right;">Сумма, ₽</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td class="col-number">{{ loop.index }}</td>
+        <td>{{ item.product }}</td>
+        <td class="col-qty">{{ item.qty }}</td>
+        <td class="col-price">{{ format_money(item.price) }}</td>
+        <td class="col-sum">{{ format_money(item.line_total) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <table class="totals">
+    <tr>
+      <td class="spacer"></td>
+      <td class="label">Итого к оплате:</td>
+      <td class="value">{{ total }} ₽</td>
+    </tr>
+  </table>
+
+  <div class="footer">
+    Спасибо за сотрудничество! Документ подготовлен на основании заказа покупателя.
+  </div>
+</body>
+</html>
