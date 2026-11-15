@@ -351,6 +351,8 @@ python -m unittest discover -s tests -v
 
 - `CONSPECT.md` — краткая аннотация темы курса своими словами.
 - `PLAN.md` — план, фактические проверки, runbook и риски.
-- `SAMOPROVERKA.md` — 16 вопросов для самопроверки с ответами.
+- `SAMOPROVERKA.md` — 17 вопросов для самопроверки с ответами.
+- `OFFER.md` — оффер для фриланс-биржи.
+- `SUBMISSION.md` — карточка сдачи с фактическим статусом PDF-движка.
 - `reference/pdf-generation.md` — справочник по HTML, Jinja2, CSV/JSON,
   WeasyPrint, xhtml2pdf, шрифтам и типичным ошибкам.
